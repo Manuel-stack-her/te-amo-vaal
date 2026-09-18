@@ -12,6 +12,9 @@ body{font-family:Georgia,serif;color:white;background:#090107}
 #intro.hide{opacity:0;pointer-events:none}
 .intro{padding:25px}.env{font-size:85px;animation:p 1.2s infinite}
 .hint{margin-top:20px;letter-spacing:3px;opacity:.7}
+.typeLine{display:block;min-height:1.65em}
+.caret{display:inline-block;width:2px;height:1em;background:#efb7c6;margin-left:3px;vertical-align:-2px;animation:blink .75s infinite}
+@keyframes blink{50%{opacity:0}}
 #scene{background:radial-gradient(circle at center,#701633,#280712 45%,#050005)}
 .card{width:min(90%,520px);padding:40px 24px;border-radius:30px;background:#10030b99;
 border:1px solid #ffffff2b;box-shadow:0 0 80px #ff30601f;backdrop-filter:blur(8px)}
@@ -38,7 +41,7 @@ background:#ffffff10;color:white;font-size:15px}
 <div id="intro" onclick="openLetter()">
   <div class="intro">
     <div class="env">💌</div>
-    <div style="font-size:25px">Valeria, tengo algo que decirte...</div>
+    <div id="introText" style="font-size:24px;line-height:1.65;min-height:220px"></div>
     <div class="hint">TOCA LA PANTALLA</div>
   </div>
 </div>
@@ -97,12 +100,59 @@ function playMusic(){
 }
 
 function openLetter(){
-  document.getElementById('intro').classList.add('hide');
   pendingPlay=true;
   playMusic();
-  setInterval(heart,450);
-}
 
+  const intro=document.getElementById('intro');
+  const text=document.getElementById('introText');
+  const hint=document.querySelector('.hint');
+  const lines=[
+    'Aún recuerdo nuestro primer beso...',
+    'Yo tan nervioso,',
+    'y tú tan hermosa. ❤️',
+    'Y aún sigo enamorado de ti,',
+    'más que la primera vez que te conocí.',
+    'Gracias por llegar a mi vida. ❤️'
+  ];
+
+  hint.textContent='';
+  text.innerHTML='';
+
+  let lineIndex=0;
+  let charIndex=0;
+
+  function typeNext(){
+    if(lineIndex>=lines.length){
+      setTimeout(()=>{
+        intro.classList.add('hide');
+        setInterval(heart,450);
+      },1800);
+      return;
+    }
+
+    if(charIndex===0){
+      const line=document.createElement('span');
+      line.className='typeLine';
+      line.id='currentLine';
+      text.appendChild(line);
+    }
+
+    const line=document.getElementById('currentLine');
+    line.innerHTML=lines[lineIndex].slice(0,charIndex+1)+'<span class="caret"></span>';
+    charIndex++;
+
+    if(charIndex<lines[lineIndex].length){
+      setTimeout(typeNext,42);
+    }else{
+      line.innerHTML=lines[lineIndex];
+      lineIndex++;
+      charIndex=0;
+      setTimeout(typeNext,850);
+    }
+  }
+
+  typeNext();
+}
 function heart(){
   let h=document.createElement('div');
   h.className='float';
