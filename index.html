@@ -5,37 +5,37 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Para Valeria ❤️</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
-body{font-family:Georgia,serif;color:white;background:#090107}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Georgia,serif;color:#fff;background:#090107}
 #intro,#scene{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;text-align:center}
-#intro{z-index:10;background:radial-gradient(circle,#65132e,#090107);transition:opacity 1.4s}
+#intro{z-index:10;background:radial-gradient(circle,#65132e,#090107);transition:opacity 1.4s ease}
 #intro.hide{opacity:0;pointer-events:none}
-.intro{padding:25px}.env{font-size:85px;animation:p 1.2s infinite}
-.hint{margin-top:20px;letter-spacing:3px;opacity:.7}
+.intro{width:100%;padding:25px}
+.env{font-size:85px;animation:pulse 1.2s infinite}
+.hint{margin-top:20px;letter-spacing:3px;opacity:.75}
 .typeLine{display:block;min-height:1.65em}
 .caret{display:inline-block;width:2px;height:1em;background:#efb7c6;margin-left:3px;vertical-align:-2px;animation:blink .75s infinite}
 @keyframes blink{50%{opacity:0}}
-#scene{background:radial-gradient(circle at center,#701633,#280712 45%,#050005)}
-.card{width:min(90%,520px);padding:40px 24px;border-radius:30px;background:#10030b99;
-border:1px solid #ffffff2b;box-shadow:0 0 80px #ff30601f;backdrop-filter:blur(8px)}
+#scene{z-index:1;background:radial-gradient(circle at center,#701633,#280712 45%,#050005)}
+.card{width:min(90%,520px);padding:40px 24px;border-radius:30px;background:#10030b;
+border:1px solid #ffffff2b;box-shadow:0 0 80px #ff30601f}
 .mini{font-size:13px;letter-spacing:4px;color:#efb7c6}
-.heart{font-size:76px;animation:p 1.3s infinite}
+.heart{font-size:76px;animation:pulse 1.3s infinite}
 h1{font-size:clamp(40px,12vw,68px);font-weight:400;margin:8px 0 15px;text-shadow:0 0 25px #ff7195}
 .line{width:80px;height:1px;background:#e8a5b8;margin:22px auto}
 .msg{font-size:19px;line-height:1.7;color:#f9e5ec}
 .sig{margin-top:22px;color:#ddb3c1}
-button{margin-top:26px;padding:12px 23px;border-radius:30px;border:1px solid #ffffff55;
-background:#ffffff10;color:white;font-size:15px}
-.float{position:fixed;bottom:-50px;z-index:2;animation:up linear forwards}
+button{margin-top:26px;padding:12px 23px;border-radius:30px;border:1px solid #ffffff55;background:#ffffff10;color:#fff;font-size:15px}
+.float{position:fixed;bottom:-50px;z-index:20;animation:up linear forwards}
 @keyframes up{0%{opacity:0;transform:translateY(0)}10%{opacity:.9}100%{opacity:0;transform:translateY(-115vh) rotate(35deg)}}
-@keyframes p{50%{transform:scale(1.16)}}
-#player{position:fixed;width:1px;height:1px;left:-10px;top:-10px;opacity:0;pointer-events:none}
-.musicNote{position:fixed;bottom:12px;left:0;right:0;text-align:center;font-size:12px;opacity:.55;z-index:4}
+@keyframes pulse{50%{transform:scale(1.16)}}
+#player{position:fixed;width:2px;height:2px;left:-20px;top:-20px;opacity:0;pointer-events:none}
+.musicNote{position:fixed;bottom:12px;left:0;right:0;text-align:center;font-size:12px;opacity:.55;z-index:25}
 </style>
 </head>
 <body>
 
-<!-- Reproductor oficial de YouTube: se inicia al tocar el sobre -->
 <div id="player"></div>
 
 <div id="intro" onclick="openLetter()">
@@ -69,9 +69,10 @@ background:#ffffff10;color:white;font-size:15px}
 let ytPlayer=null;
 let youtubeReady=false;
 let pendingPlay=false;
-const MUSIC_START=20; // segundos: entra directamente después de la introducción
+let letterStarted=false;
 
-// Video oficial de Río Roma: Mi Persona Favorita
+const MUSIC_START=20;
+
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('player',{
     videoId:'AJKzOgv5YNU',
@@ -103,12 +104,16 @@ function playMusic(){
 }
 
 function openLetter(){
+  if(letterStarted)return;
+  letterStarted=true;
+
   pendingPlay=true;
   playMusic();
 
   const intro=document.getElementById('intro');
   const text=document.getElementById('introText');
   const hint=document.querySelector('.hint');
+
   const lines=[
     'Aún recuerdo nuestro primer beso...',
     'Yo tan nervioso,',
@@ -145,7 +150,7 @@ function openLetter(){
 
   function typeNext(){
     if(lineIndex>=lines.length){
-      setTimeout(()=>{
+      setTimeout(function(){
         intro.classList.add('hide');
         setInterval(heart,450);
       },3200);
@@ -175,22 +180,23 @@ function openLetter(){
 
   typeNext();
 }
+
 function heart(){
-  let h=document.createElement('div');
+  const h=document.createElement('div');
   h.className='float';
   h.textContent=['❤️','💕','💗','💖','✨'][Math.floor(Math.random()*5)];
   h.style.left=Math.random()*100+'vw';
   h.style.fontSize=15+Math.random()*28+'px';
   h.style.animationDuration=5+Math.random()*7+'s';
   document.body.appendChild(h);
-  setTimeout(()=>h.remove(),13000);
+  setTimeout(function(){h.remove()},13000);
 }
 
 function last(e){
   e.stopPropagation();
   document.getElementById('msg').innerHTML=
-  'Si alguna vez dudas de lo que siento por ti:<br><br>'+
-  '<strong style="font-size:32px">TE AMO, VALERIA ❤️</strong>';
+    'Si alguna vez dudas de lo que siento por ti:<br><br>'+
+    '<strong style="font-size:32px">TE AMO, VALERIA ❤️</strong>';
 }
 </script>
 </body>
